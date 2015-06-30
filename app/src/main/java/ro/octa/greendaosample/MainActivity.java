@@ -8,6 +8,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -28,9 +29,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private ListView list;
     private UserListAdapter adapter;
     private List<DBUser> userList;
-    /**
-     * Manages the database for this application..
-     */
+    private EditText email, fname, lname, pnum;
+
     private IDatabaseManager databaseManager;
 
     @Override
@@ -38,8 +38,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // init database manager
         databaseManager = new DatabaseManager(this);
+
+        email = (EditText) findViewById(R.id.email);
+        fname = (EditText) findViewById(R.id.fname);
+        lname = (EditText) findViewById(R.id.lname);
+        pnum = (EditText) findViewById(R.id.pnum);
 
         userList = new ArrayList<DBUser>();
         list = (ListView) findViewById(R.id.listView);
@@ -103,10 +107,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         adapter.notifyDataSetChanged();
     }
 
-    /**
-     * Called after your activity has been stopped, prior to it being started again.
-     * Always followed by onStart()
-     */
     @Override
     protected void onRestart() {
         if (databaseManager == null)
@@ -115,10 +115,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onRestart();
     }
 
-    /**
-     * Called after onRestoreInstanceState(Bundle), onRestart(), or onPause(), for your activity
-     * to start interacting with the user.
-     */
     @Override
     protected void onResume() {
         // init database manager
@@ -127,9 +123,6 @@ public class MainActivity extends Activity implements View.OnClickListener {
         super.onResume();
     }
 
-    /**
-     * Called when you are no longer visible to the user.
-     */
     @Override
     protected void onStop() {
         if (databaseManager != null)
@@ -143,9 +136,8 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.createUserBtn: {
 
-                // create a random user object
                 DBUser user = new DBUser();
-                user.setEmail(UUID.randomUUID().toString() + "@email.com");
+                user.setEmail(email.getText().toString());
                 user.setPassword("defaultPass");
 
                 // insert that user object to our DB
@@ -155,11 +147,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 DBUserDetails userDetails = new DBUserDetails();
                 userDetails.setBirthDate(new Date());
                 userDetails.setRegistrationDate(new Date());
-                userDetails.setCountry("World");
-                userDetails.setFirstName(UUID.randomUUID().toString());
-                userDetails.setLastName(UUID.randomUUID().toString());
+                userDetails.setCountry("India");
+                userDetails.setFirstName(fname.getText().toString());
+                userDetails.setLastName(lname.getText().toString());
                 userDetails.setGender("MALE");
-                userDetails.setNickName(UUID.randomUUID().toString());
+                userDetails.setNickName(fname.getText().toString());
                 userDetails.setUserId(user.getId());
                 userDetails.setUser(user);
 
@@ -174,7 +166,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
                 // create a dynamic list of phone numbers for the above object
                 for (int i = 0; i < MathUtils.randInt(1, 7); i++) {
                     DBPhoneNumber phoneNumber = new DBPhoneNumber();
-                    phoneNumber.setPhoneNumber(UUID.randomUUID().toString());
+                    phoneNumber.setPhoneNumber(pnum.getText().toString());
                     phoneNumber.setDetailsId(userDetails.getId());
 
                     // insert or update an existing phone number into the database
@@ -196,11 +188,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             default:
                 break;
         }
+        email.setText("");
+        fname.setText("");
+        lname.setText("");
+        pnum.setText("");
     }
 
-    /**
-     * Display all the users from the DB into the listView
-     */
     private void refreshUserList() {
         userList = DatabaseManager.getInstance(this).listUsers();
         if (userList != null) {

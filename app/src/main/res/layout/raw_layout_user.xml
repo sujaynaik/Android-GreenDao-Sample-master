@@ -8,11 +8,13 @@
 
     <TextView
         android:id="@+id/user_id"
+        android:textSize="24dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="10dip" />
 
     <TextView
+        android:textSize="24dp"
         android:id="@+id/user_email"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content" />

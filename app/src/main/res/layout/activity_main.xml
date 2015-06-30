@@ -9,10 +9,41 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
 
+    <EditText
+        android:id="@+id/email"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="emailId"
+        android:inputType="textEmailAddress" />
+
+    <EditText
+        android:id="@+id/fname"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="first name" />
+
+    <EditText
+        android:id="@+id/lname"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="last name" />
+
+    <EditText
+        android:id="@+id/pnum"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="phone number"
+        android:inputType="phone" />
+
     <Button
         android:id="@+id/createUserBtn"
-        android:layout_width="fill_parent"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_margin="10dip"
         android:background="#ff3d8dc6"
         android:text="@string/create_user_hint"
@@ -23,7 +54,9 @@
         android:id="@+id/listView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
+        android:layout_gravity="center"
         android:layout_marginTop="10dip"
+        android:background="#ffd5d5d5"
         android:scrollbarStyle="outsideInset" />
 
 </LinearLayout>
