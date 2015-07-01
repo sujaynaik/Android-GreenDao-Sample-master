@@ -6,9 +6,7 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
-/**
- * @author Octa
- */
+
 public class MyDaoGenerator {
 
     private static final String PROJECT_DIR = System.getProperty("user.dir").replace("\\", "/");
@@ -22,9 +20,6 @@ public class MyDaoGenerator {
         new DaoGenerator().generateAll(schema, OUT_DIR);
     }
 
-    /**
-     * Create tables and the relationships between them
-     */
     private static void addTables(Schema schema) {
         /* entities */
         Entity user = addUser(schema);
@@ -45,11 +40,6 @@ public class MyDaoGenerator {
 
     }
 
-    /**
-     * Create user's Properties
-     *
-     * @return DBUser entity
-     */
     private static Entity addUser(Schema schema) {
         Entity user = schema.addEntity("DBUser");
         user.addIdProperty().primaryKey().autoincrement();
@@ -58,11 +48,6 @@ public class MyDaoGenerator {
         return user;
     }
 
-    /**
-     * Create user details Properties
-     *
-     * @return DBUserDetails entity
-     */
     private static Entity addUserDetails(Schema schema) {
         Entity userDetails = schema.addEntity("DBUserDetails");
         userDetails.addIdProperty().primaryKey().autoincrement();
@@ -77,11 +62,6 @@ public class MyDaoGenerator {
         return userDetails;
     }
 
-    /**
-     * Create phone numbers Properties
-     *
-     * @return DBPhoneNumber entity
-     */
     private static Entity addPhoneNumber(Schema schema) {
         Entity phone = schema.addEntity("DBPhoneNumber");
         phone.addIdProperty().primaryKey().autoincrement();

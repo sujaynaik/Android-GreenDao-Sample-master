@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -136,62 +137,82 @@ public class MainActivity extends Activity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.createUserBtn: {
 
-                DBUser user = new DBUser();
-                user.setEmail(email.getText().toString());
-                user.setPassword("defaultPass");
+                String vemail = email.getText().toString().trim();
+                String emailPattern = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+";
+                String emailPattern2 = "[a-zA-Z0-9._-]+@[a-z]+\\.+[a-z]+\\.+[a-z]+";
+                if (vemail.length() > 0 && fname.length() > 0 && lname.length() > 0 && pnum.length() > 0) {
 
-                // insert that user object to our DB
-                user = databaseManager.insertUser(user);
+                    if (vemail.matches(emailPattern) || vemail.matches(emailPattern2)) {
 
-                // Create a random userDetails object
-                DBUserDetails userDetails = new DBUserDetails();
-                userDetails.setBirthDate(new Date());
-                userDetails.setRegistrationDate(new Date());
-                userDetails.setCountry("India");
-                userDetails.setFirstName(fname.getText().toString());
-                userDetails.setLastName(lname.getText().toString());
-                userDetails.setGender("MALE");
-                userDetails.setNickName(fname.getText().toString());
-                userDetails.setUserId(user.getId());
-                userDetails.setUser(user);
+                        if (pnum.length() == 10) {
 
-                // insert or update this userDetails object to our DB
-                userDetails = databaseManager.insertOrUpdateUserDetails(userDetails);
+                            DBUser user = new DBUser();
+                            user.setEmail(email.getText().toString());
+                            user.setPassword("defaultPass");
 
-                // link userDetails Key to user
-                user.setDetailsId(userDetails.getId());
-                user.setDetails(userDetails);
-                databaseManager.updateUser(user);
+                            // insert that user object to our DB
+                            user = databaseManager.insertUser(user);
 
-                // create a dynamic list of phone numbers for the above object
-                for (int i = 0; i < MathUtils.randInt(1, 7); i++) {
-                    DBPhoneNumber phoneNumber = new DBPhoneNumber();
-                    phoneNumber.setPhoneNumber(pnum.getText().toString());
-                    phoneNumber.setDetailsId(userDetails.getId());
+                            // Create a random userDetails object
+                            DBUserDetails userDetails = new DBUserDetails();
+                            userDetails.setBirthDate(new Date());
+                            userDetails.setRegistrationDate(new Date());
+                            userDetails.setCountry("India");
+                            userDetails.setFirstName(fname.getText().toString());
+                            userDetails.setLastName(lname.getText().toString());
+                            userDetails.setGender("MALE");
+                            userDetails.setNickName(fname.getText().toString());
+                            userDetails.setUserId(user.getId());
+                            userDetails.setUser(user);
 
-                    // insert or update an existing phone number into the database
-                    databaseManager.insertOrUpdatePhoneNumber(phoneNumber);
-                }
+                            // insert or update this userDetails object to our DB
+                            userDetails = databaseManager.insertOrUpdateUserDetails(userDetails);
 
-                // add the user object to the list
-                adapter.add(user);
-                adapter.notifyDataSetChanged();
-                list.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        // Select the last row so it will scroll into view...
-                        list.setSelection(adapter.getCount() - 1);
+                            // link userDetails Key to user
+                            user.setDetailsId(userDetails.getId());
+                            user.setDetails(userDetails);
+                            databaseManager.updateUser(user);
+
+                            // create a dynamic list of phone numbers for the above object
+                            for (int i = 0; i < MathUtils.randInt(1, 7); i++) {
+                                DBPhoneNumber phoneNumber = new DBPhoneNumber();
+                                phoneNumber.setPhoneNumber(pnum.getText().toString());
+                                phoneNumber.setDetailsId(userDetails.getId());
+
+                                // insert or update an existing phone number into the database
+                                databaseManager.insertOrUpdatePhoneNumber(phoneNumber);
+                            }
+
+                            // add the user object to the list
+                            adapter.add(user);
+                            adapter.notifyDataSetChanged();
+                            list.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    // Select the last row so it will scroll into view...
+                                    list.setSelection(adapter.getCount() - 1);
+                                }
+                            });
+                            email.setText("");
+                            fname.setText("");
+                            lname.setText("");
+                            pnum.setText("");
+                            break;
+                        }else {
+                            Toast.makeText(this, "strength on phone number is not 10", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }else {
+                        Toast.makeText(this, "email id is not vaid", Toast.LENGTH_SHORT).show();
                     }
-                });
-                break;
+                } else {
+                    Toast.makeText(this, "some fields are empty", Toast.LENGTH_SHORT).show();
+                }
             }
             default:
                 break;
         }
-        email.setText("");
-        fname.setText("");
-        lname.setText("");
-        pnum.setText("");
+
     }
 
     private void refreshUserList() {
