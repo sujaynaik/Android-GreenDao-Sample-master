@@ -23,9 +23,6 @@ import ro.octa.greendaosample.dao.DBUserDetails;
 import ro.octa.greendaosample.manager.DatabaseManager;
 import ro.octa.greendaosample.manager.IDatabaseManager;
 
-/**
- * @author Octa
- */
 public class UserDetailsActivity extends Activity {
 
     private TextView detailsHeader;
@@ -49,10 +46,6 @@ public class UserDetailsActivity extends Activity {
         setupDefaults();
     }
 
-    /**
-     * Called after your activity has been stopped, prior to it being started again.
-     * Always followed by onStart()
-     */
     @Override
     protected void onRestart() {
         if (databaseManager == null)
