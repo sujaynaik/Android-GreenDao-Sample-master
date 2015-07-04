@@ -1,13 +1,20 @@
 package ro.octa.greendaosample;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.ListActivity;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -15,7 +22,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import ro.octa.greendaosample.adapters.UserListAdapter;
 import ro.octa.greendaosample.dao.DBPhoneNumber;
@@ -25,7 +31,7 @@ import ro.octa.greendaosample.manager.DatabaseManager;
 import ro.octa.greendaosample.manager.IDatabaseManager;
 import ro.octa.greendaosample.utils.MathUtils;
 
-public class MainActivity extends Activity implements View.OnClickListener {
+public class MainActivity extends ListActivity implements View.OnClickListener {
 
     private ListView list;
     private UserListAdapter adapter;
@@ -33,6 +39,10 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private EditText email, fname, lname, pnum;
 
     private IDatabaseManager databaseManager;
+    private DBUser user;
+    Button deleteUser;
+
+    String options[] = new String[]{ "Open", "Delete"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,28 +51,84 @@ public class MainActivity extends Activity implements View.OnClickListener {
 
         databaseManager = new DatabaseManager(this);
 
+        long userId = getIntent().getLongExtra("userID", 1L);
+        //long userId = getN
+        Log.d("on create", String.valueOf(userId));
+        if (userId != -1) {
+            user = databaseManager.getUserById(userId);
+        }
+
         email = (EditText) findViewById(R.id.email);
         fname = (EditText) findViewById(R.id.fname);
         lname = (EditText) findViewById(R.id.lname);
         pnum = (EditText) findViewById(R.id.pnum);
 
+        deleteUser = (Button) findViewById(R.id.delete_user);
+
+        findViewById(R.id.createUserBtn).setOnClickListener(this);
+
         userList = new ArrayList<DBUser>();
-        list = (ListView) findViewById(R.id.listView);
+
+        list = getListView();
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
+                Dialog dialog = onCreateDialogSingleChoice(position);
+                Log.d("on item click", "2");
+                dialog.show();
+                Log.d("on item click", "3");
+            }
+        });
+
+        refreshUserList();
+    }
+
+    public Dialog onCreateDialogSingleChoice(final int position) {
+
+        Log.d("on create dialog", "1");
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        Log.d("on create dialog", "2");
+        dialog.setTitle("Select an Option");
+
+        dialog.setPositiveButton("Open", new Dialog.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
                 DBUser user = (DBUser) list.getItemAtPosition(position);
                 if (user != null) {
+
                     Intent intent = new Intent(MainActivity.this, UserDetailsActivity.class);
                     intent.putExtra("userID", user.getId());
                     startActivityForResult(intent, 1);
                 }
             }
+        }).setNegativeButton("Delete", new Dialog.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                DBUser user = (DBUser) list.getItemAtPosition(position);
+                if (user != null) {
+
+                    Long userId = user.getId();
+                    boolean status = DatabaseManager.getInstance(MainActivity.this).deleteUserById(userId);
+                    if (status) {
+
+                        Intent returnIntent = new Intent();
+                        setResult(RESULT_OK, returnIntent);
+                        Log.i(UserDetailsActivity.class.getSimpleName(), "User " + userId + " was successfully deleted from the schema!");
+                        Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
+                        //finish();
+                    } else {
+
+                        Toast.makeText(MainActivity.this, "ops... something went wrong.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
         });
-
-        refreshUserList();
-
-        findViewById(R.id.createUserBtn).setOnClickListener(this);
+        Log.d("on create dialog", "5");
+        return dialog.create();
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -198,11 +264,11 @@ public class MainActivity extends Activity implements View.OnClickListener {
                             lname.setText("");
                             pnum.setText("");
                             break;
-                        }else {
+                        } else {
                             Toast.makeText(this, "strength on phone number is not 10", Toast.LENGTH_SHORT).show();
                         }
 
-                    }else {
+                    } else {
                         Toast.makeText(this, "email id is not vaid", Toast.LENGTH_SHORT).show();
                     }
                 } else {
