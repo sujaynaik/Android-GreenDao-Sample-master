@@ -52,8 +52,8 @@ public class MainActivity extends ListActivity implements View.OnClickListener {
         databaseManager = new DatabaseManager(this);
 
         long userId = getIntent().getLongExtra("userID", 1L);
-        //long userId = getN
         Log.d("on create", String.valueOf(userId));
+
         if (userId != -1) {
             user = databaseManager.getUserById(userId);
         }
@@ -119,7 +119,7 @@ public class MainActivity extends ListActivity implements View.OnClickListener {
                         setResult(RESULT_OK, returnIntent);
                         Log.i(UserDetailsActivity.class.getSimpleName(), "User " + userId + " was successfully deleted from the schema!");
                         Toast.makeText(getApplicationContext(), "deleted", Toast.LENGTH_SHORT).show();
-                        //finish();
+                        refreshUserList();
                     } else {
 
                         Toast.makeText(MainActivity.this, "ops... something went wrong.", Toast.LENGTH_SHORT).show();

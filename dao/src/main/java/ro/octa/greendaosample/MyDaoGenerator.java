@@ -6,7 +6,6 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
-
 public class MyDaoGenerator {
 
     private static final String PROJECT_DIR = System.getProperty("user.dir").replace("\\", "/");
@@ -21,12 +20,13 @@ public class MyDaoGenerator {
     }
 
     private static void addTables(Schema schema) {
-        /* entities */
+
+        //entities
         Entity user = addUser(schema);
         Entity userDetails = addUserDetails(schema);
         Entity phoneNumber = addPhoneNumber(schema);
 
-        /* properties */
+        //properties
         Property userIdForUserDetails = userDetails.addLongProperty("userId").notNull().getProperty();
         Property userDetailsIdForUser = user.addLongProperty("detailsId").notNull().getProperty();
         Property userDetailsIdForPhoneNumber = phoneNumber.addLongProperty("detailsId").notNull().getProperty();

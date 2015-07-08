@@ -9,5 +9,6 @@
     <string name="details_for_user">Details for user %s</string>
     <string name="menu_truncate_tables">Truncate tables</string>
     <string name="title_activity_mylist">Mylist</string>
+    <string name="title_activity_image_upload">ImageUpload</string>
 
 </resources>
